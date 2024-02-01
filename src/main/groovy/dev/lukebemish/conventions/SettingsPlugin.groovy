@@ -18,7 +18,7 @@ class SettingsPlugin implements Plugin<Settings> {
 
         settings.dependencyResolutionManagement {
             it.versionCatalogs { container ->
-                container.named('libs') {
+                container.maybeCreate('libs').tap {
                     Versioning.apply(it as VersionCatalogBuilder)
                 }
             }
