@@ -2,7 +2,7 @@
 
 jspecify = "0.3.0"
 jetbrains_annotations = "24.1.0"
-autoservice = "1.0.1"
+autoservice = "1.1.1"
 
 managedversioning = "1.2.6"
 nexuspublish = "1.3.0"
