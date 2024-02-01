@@ -1,0 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven {
+            url "https://maven.lukebemish.dev/releases/"
+        }
+    }
+}
+
+rootProject.name = 'conventions'
