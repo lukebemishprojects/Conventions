@@ -13,7 +13,7 @@ gradle_enterprise = "3.16.2"
 
 [libraries]
 
-jspecify = { module = "dev.jspecify:jspecify", version.ref = "jspecify" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 jetbrains_annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains_annotations" }
 autoservice = { module = "com.google.auto.service:auto-service", version.ref = "autoservice" }
 
