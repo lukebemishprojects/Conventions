@@ -34,7 +34,7 @@ class SettingsPlugin implements Plugin<Settings> {
             }
         }
 
-        settings.extensions.getByType(BuildCacheConfiguration).tap {
+        settings.getBuildCache().tap {
             if (settings.providers.gradleProperty('buildCacheUrl').orNull) {
                 remote(HttpBuildCache) {
                     it.url = settings.providers.gradleProperty('buildCacheUrl').orNull
