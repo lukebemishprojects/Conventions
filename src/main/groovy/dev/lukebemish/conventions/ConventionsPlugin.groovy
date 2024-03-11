@@ -4,6 +4,7 @@ import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
 import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.initialization.Settings
 import org.gradle.caching.http.HttpBuildCache
 import org.gradle.caching.http.HttpBuildCacheCredentials
@@ -41,10 +42,10 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 
 		String vcNotation = "dev.lukebemish:conventions:${VERSION}"
 		settings.dependencyResolutionManagement { deps ->
-			deps.repositories {
-				it.maven { m ->
-					name = "Luke's Maven"
-					url = "https://maven.lukebemish.dev/releases/"
+			deps.repositories { repositories ->
+				repositories.maven { MavenArtifactRepository m ->
+					m.name = "Luke's Maven"
+					m.url = "https://maven.lukebemish.dev/releases/"
 				}
 			}
 			deps.versionCatalogs { container ->
