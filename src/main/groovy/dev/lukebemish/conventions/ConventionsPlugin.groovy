@@ -42,7 +42,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 		String vcNotation = "dev.lukebemish:conventions:${VERSION}"
 		settings.dependencyResolutionManagement { deps ->
 			deps.versionCatalogs { container ->
-				container.maybeCreate('libs').tap {
+				container.maybeCreate('cLibs').tap {
 					from(vcNotation)
 				}
 			}
