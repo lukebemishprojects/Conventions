@@ -10,7 +10,7 @@ import org.gradle.caching.http.HttpBuildCacheCredentials
 
 @CompileStatic
 abstract class ConventionsPlugin implements Plugin<Object> {
-	public static final String VERSION = ConventionsPlugin.class.getPackage().getImplementationVersion();
+	public static final String VERSION = ConventionsPlugin.class.getPackage().getImplementationVersion()
 
 	@Override
 	void apply(Object target) {
@@ -33,7 +33,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 
 		settings.pluginManagement.resolutionStrategy {
 			it.eachPlugin {
-				if (it.requested.id.name.startsWith('dev.lukebemish.conventions.java')) {
+				if (it.requested.id.name.startsWith('dev.lukebemish.conventions')) {
 					it.useVersion(VERSION)
 				}
 			}
