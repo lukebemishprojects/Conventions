@@ -1,95 +1,71 @@
 plugins {
-    id 'groovy-gradle-plugin'
-    alias libs.plugins.managedversioning
-    id 'maven-publish'
-    id 'codegen'
+	id 'version-catalog'
+	id 'shared'
 }
 
 managedVersioning {
-    versionFile.set file('version.properties')
-    versionPRs()
-    versionSnapshots()
-    gitHubActions {
-        release {
-            prettyName.set 'Release'
-            workflowDispatch.set(true)
-            gradleJob {
-                name.set 'build'
-                step {
-                    setupGitUser()
-                }
-                buildCache()
-                readOnly.set false
-                gradlew 'Tag Release', 'tagRelease'
-                gradlew 'Build', 'build'
-                step {
-                    run.set 'git push && git push --tags'
-                }
-                gradlew 'Publish', 'publish'
-                mavenRelease('github')
-            }
-        }
-        build_pr {
-            prettyName.set 'Build PR'
-            pullRequest.set(true)
-            gradleJob {
-                name.set 'build'
-                gradlew 'Build', 'build'
-                gradlew 'Publish', 'publish'
-                pullRequestArtifact()
-            }
-        }
-        publish_pr {
-            prettyName.set 'Publish PR'
-            publishPullRequestAction(
-                'github',
-                'dev/lukebemish/conventions/conventions-*',
-                'Build PR'
-            )
-        }
-    }
+	gitHubActions {
+		release {
+			prettyName.set 'Release'
+			workflowDispatch.set(true)
+			gradleJob {
+				name.set 'build'
+				step {
+					setupGitUser()
+				}
+				buildCache()
+				readOnly.set false
+				gradlew 'Tag Release', 'tagRelease'
+				gradlew 'Build', 'build'
+				step {
+					run.set 'git push && git push --tags'
+				}
+				gradlew 'Publish', 'publish'
+				mavenRelease('github')
+			}
+		}
+		build_pr {
+			prettyName.set 'Build PR'
+			pullRequest.set(true)
+			gradleJob {
+				name.set 'build'
+				gradlew 'Build', 'build'
+				gradlew 'Publish', 'publish'
+				pullRequestArtifact()
+			}
+		}
+		publish_pr {
+			prettyName.set 'Publish PR'
+			publishPullRequestAction(
+				'github',
+				'dev/lukebemish/conventions/conventions-*',
+				'Build PR'
+			)
+		}
+	}
 }
 
-managedVersioning.apply()
 println "Building: $version"
 
-group = 'dev.lukebemish'
-
-repositories {
-    mavenCentral()
-    gradlePluginPortal()
-}
-
 dependencies {
-    implementation libs.gradle.foojay
-    implementation libs.gradle.enterprise
-}
-
-java.withSourcesJar()
-java.withJavadocJar()
-java.toolchain.languageVersion.set JavaLanguageVersion.of(17)
-
-processResources {
-    from rootProject.file('LICENSE')
+	implementation libs.gradle.foojay
+	implementation libs.gradle.enterprise
 }
 
 gradlePlugin {
-    plugins {
-        settingsPlugin {
-            id = 'dev.lukebemish.conventions.settings'
-            implementationClass = 'dev.lukebemish.conventions.SettingsPlugin'
-        }
-    }
+	plugins {
+		sharedPlugin {
+			id = 'dev.lukebemish.conventions'
+			implementationClass = 'dev.lukebemish.conventions.ConventionsPlugin'
+		}
+	}
 }
 
-sourceSets.main.groovy.srcDir "${layout.buildDirectory.get()}/generated/sources/versionCatalog/groovy"
-tasks.named('compileGroovy') {
-    dependsOn('generateGroovy')
+catalog {
+	versionCatalog {
+		from(files("gradle/libs.versions.toml"))
+	}
 }
 
-tasks.named('sourcesJar') {
-    dependsOn('generateGroovy')
-}
-
-managedVersioning.publishing.mavenPullRequest(publishing)
-managedVersioning.publishing.mavenRelease(publishing)
+AdhocComponentWithVariants javaComponent = (AdhocComponentWithVariants) project.components.named("java").get()
+javaComponent.addVariantsFromConfiguration(configurations.versionCatalogElements) {}

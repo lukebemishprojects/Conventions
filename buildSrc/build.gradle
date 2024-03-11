@@ -3,9 +3,17 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
+	gradlePluginPortal()
+	maven {
+		name = "Luke's Maven"
+		url = "https://maven.lukebemish.dev/releases/"
+	}
 }
 
 dependencies {
-    implementation "org.tomlj:tomlj:1.1.1"
+	def mvId = libs.plugins.managedversioning.get().getPluginId()
+	implementation "$mvId:${mvId}.gradle.plugin:${libs.versions.managedversioning.get()}"
+
+	def spotlessId = libs.plugins.spotless.get().getPluginId()
+	implementation "$spotlessId:${spotlessId}.gradle.plugin:${libs.versions.spotless.get()}"
 }

@@ -1,0 +1,69 @@
+plugins {
+	id 'groovy-gradle-plugin'
+	id 'maven-publish'
+	id 'dev.lukebemish.managedversioning'
+	id 'com.diffplug.spotless'
+}
+
+managedVersioning {
+	versionFile.set project.getRootDir().toPath().resolve('version.properties').toFile()
+	gitWorkingDir.set project.getRootDir()
+	versionPRs()
+	versionSnapshots()
+}
+
+managedVersioning.apply()
+
+project.group = 'dev.lukebemish'+(':' + rootProject.name + project.path).split(':')[0..-2].join('.')
+
+repositories {
+	mavenCentral()
+	gradlePluginPortal()
+}
+
+java.withSourcesJar()
+java.toolchain.languageVersion.set JavaLanguageVersion.of(17)
+
+processResources {
+	from project.rootDir.toPath().resolve('LICENSE').toFile()
+}
+
+tasks.named('jar', Jar) {
+	manifest {
+		attributes(['Implementation-Version': project.version])
+	}
+}
+
+managedVersioning.publishing.mavenPullRequest(publishing)
+managedVersioning.publishing.mavenRelease(publishing)
+
+spotless {
+	encoding 'UTF-8'
+	format 'misc', {
+		target '*.gradle', '.gitattributes', '.gitignore'
+
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+	java {
+		target 'src/main/**/*.java'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+
+		removeUnusedImports()
+		importOrder()
+		formatAnnotations()
+	}
+	groovy {
+		target 'src/main/**/*.groovy'
+
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+
+		removeSemicolons()
+		importOrder()
+	}
+}

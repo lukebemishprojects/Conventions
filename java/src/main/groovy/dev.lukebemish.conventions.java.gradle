@@ -1,0 +1,65 @@
+import com.diffplug.gradle.spotless.JavaExtension
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'com.diffplug.spotless'
+	id 'dev.lukebemish.conventions'
+}
+
+dependencies {
+    compileOnly libs.bundles.compileonly
+    annotationProcessor libs.bundles.annotationprocessor
+}
+
+spotless {
+    encoding 'UTF-8'
+    format 'misc', {
+        target '*.gradle', '.gitattributes', '.gitignore'
+
+        trimTrailingWhitespace()
+        indentWithTabs()
+        endWithNewline()
+    }
+    java {
+		custom('noNotNull') { String fileContents ->
+			if (fileContents.contains('@NotNull') || fileContents.contains('@Nonnull')) {
+				throw new GradleException('@NotNull and @Nonnull are disallowed.')
+			}
+			fileContents
+		}
+		custom('noJetbrainsNullable') { String fileContents ->
+			if (fileContents.contains('org.jetbrains.annotations.Nullable')) {
+				throw new GradleException('jspecify @Nullable must be used')
+			}
+			fileContents
+		}
+		bumpThisNumberIfACustomStepChanges(2)
+
+        trimTrailingWhitespace()
+        indentWithTabs()
+        endWithNewline()
+
+        removeUnusedImports()
+        importOrder()
+        formatAnnotations()
+    }
+	format('packageInfo', JavaExtension) {
+		afterEvaluate {
+			sourceSets.each {
+				it.allJava.sourceDirectories.each {
+					if (it.name == 'package-info.java') {
+						target it
+					}
+				}
+			}
+		}
+		custom('packageIsNullMarked') { String fileContents ->
+			if (!fileContents.contains('@NullMarked')) {
+				throw new GradleException('Packages should be null-marked')
+			}
+			fileContents
+		}
+		bumpThisNumberIfACustomStepChanges(1)
+	}
+}

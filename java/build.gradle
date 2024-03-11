@@ -1,0 +1,8 @@
+plugins {
+	id 'shared'
+}
+
+dependencies {
+	implementation libs.spotless
+	implementation project(':')
+}
