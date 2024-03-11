@@ -41,6 +41,12 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 
 		String vcNotation = "dev.lukebemish:conventions:${VERSION}"
 		settings.dependencyResolutionManagement { deps ->
+			deps.repositories {
+				it.maven { m ->
+					name = "Luke's Maven"
+					url = "https://maven.lukebemish.dev/releases/"
+				}
+			}
 			deps.versionCatalogs { container ->
 				container.maybeCreate('cLibs').tap {
 					from(vcNotation)
