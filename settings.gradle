@@ -7,6 +7,14 @@ pluginManagement {
 	}
 }
 
+dependencyResolutionManagement {
+	versionCatalogs {
+		cLibs {
+			from(files('gradle/libs.versions.toml'))
+		}
+	}
+}
+
 rootProject.name = 'conventions'
 
 include 'java'

@@ -4,6 +4,7 @@ import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
 import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.initialization.Settings
 import org.gradle.caching.http.HttpBuildCache
@@ -43,10 +44,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 		String vcNotation = "dev.lukebemish:conventions:${VERSION}"
 		settings.dependencyResolutionManagement { deps ->
 			deps.repositories { repositories ->
-				repositories.maven { MavenArtifactRepository m ->
-					m.name = "Luke's Maven"
-					m.url = "https://maven.lukebemish.dev/releases/"
-				}
+				addRepositories(repositories)
 			}
 			deps.versionCatalogs { container ->
 				container.maybeCreate('cLibs').tap {
@@ -94,5 +92,26 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 				}
 			}
 		}
+	}
+
+	static void addRepositories(RepositoryHandler repositories) {
+		repositories.maven { MavenArtifactRepository m ->
+			m.name = "Luke's Maven"
+			m.url = "https://maven.lukebemish.dev/releases/"
+		}
+		if (VERSION.contains("-pr")) {
+			repositories.maven { MavenArtifactRepository m ->
+				m.name = "Luke's Pull Request Maven"
+				m.url = "https://maven.lukebemish.dev/pullrequests/"
+			}
+		} else if (VERSION.endsWith("-SNAPSHOT")) {
+			repositories.maven { MavenArtifactRepository m ->
+				m.name = "Luke's Snapshot Maven"
+				m.url = "https://maven.lukebemish.dev/snapshots/"
+			}
+		} else if (VERSION.endsWith("-dirty")) {
+			repositories.mavenLocal()
+		}
+		repositories.gradlePluginPortal()
 	}
 }

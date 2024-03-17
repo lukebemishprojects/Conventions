@@ -64,6 +64,11 @@ gradlePlugin {
 catalog {
 	versionCatalog {
 		from(files("gradle/libs.versions.toml"))
+		version 'conventions', project.version as String
+		library('conventions.settings', 'dev.lukebemish', 'conventions').versionRef('conventions')
+		library('conventions.java', 'dev.lukebemish.conventions', 'java').versionRef('conventions')
+		plugin('conventions.settings', 'dev.lukebemish.conventions').versionRef('conventions')
+		plugin('conventions.java', 'dev.lukebemish.conventions.java').versionRef('conventions')
 	}
 }
 

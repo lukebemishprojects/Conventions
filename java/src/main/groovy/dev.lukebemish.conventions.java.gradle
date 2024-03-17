@@ -7,9 +7,13 @@ plugins {
 	id 'dev.lukebemish.conventions'
 }
 
+import dev.lukebemish.conventions.ConventionsPlugin
+
+ConventionsPlugin.addRepositories(repositories)
+
 dependencies {
-    compileOnly libs.bundles.compileonly
-    annotationProcessor libs.bundles.annotationprocessor
+    compileOnly cLibs.bundles.compileonly
+    annotationProcessor cLibs.bundles.annotationprocessor
 }
 
 spotless {
@@ -45,13 +49,20 @@ spotless {
         formatAnnotations()
     }
 	format('packageInfo', JavaExtension) {
-		afterEvaluate {
+		def action = {
 			sourceSets.each {
 				it.allJava.sourceDirectories.each {
-					if (it.name == 'package-info.java') {
-						target it
-					}
+					target fileTree(it, {
+						include '**/package-info.java'
+					})
 				}
+			}
+		}
+		if (this.project.state.executed) {
+			action()
+		} else {
+			this.project.afterEvaluate {
+				action()
 			}
 		}
 		custom('packageIsNullMarked') { String fileContents ->
