@@ -26,7 +26,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 	}
 
 	static void applyProject(Project project) {
-
+		addRepositories(project.getRepositories(), false)
 	}
 
 	static void applySettings(Settings settings) {
@@ -44,7 +44,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 		String vcNotation = "dev.lukebemish:conventions:${VERSION}"
 		settings.dependencyResolutionManagement { deps ->
 			deps.repositories { repositories ->
-				addRepositories(repositories)
+				addRepositories(repositories, false)
 			}
 			deps.versionCatalogs { container ->
 				container.maybeCreate('cLibs').tap {
@@ -94,7 +94,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 		}
 	}
 
-	static void addRepositories(RepositoryHandler repositories) {
+	static void addRepositories(RepositoryHandler repositories, boolean plugins) {
 		repositories.maven { MavenArtifactRepository m ->
 			m.name = "Luke's Maven"
 			m.url = "https://maven.lukebemish.dev/releases/"
@@ -112,6 +112,8 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 		} else if (VERSION.endsWith("-dirty")) {
 			repositories.mavenLocal()
 		}
-		repositories.gradlePluginPortal()
+		if (plugins) {
+			repositories.gradlePluginPortal()
+		}
 	}
 }

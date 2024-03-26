@@ -7,10 +7,6 @@ plugins {
 	id 'dev.lukebemish.conventions'
 }
 
-import dev.lukebemish.conventions.ConventionsPlugin
-
-ConventionsPlugin.addRepositories(repositories)
-
 dependencies {
     compileOnly cLibs.bundles.compileonly
     annotationProcessor cLibs.bundles.annotationprocessor

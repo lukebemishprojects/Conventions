@@ -17,4 +17,4 @@ dependencyResolutionManagement {
 
 rootProject.name = 'conventions'
 
-include 'java'
+include 'java', 'conventionplugin'

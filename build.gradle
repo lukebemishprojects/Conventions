@@ -67,8 +67,10 @@ catalog {
 		version 'conventions', project.version as String
 		library('conventions.settings', 'dev.lukebemish', 'conventions').versionRef('conventions')
 		library('conventions.java', 'dev.lukebemish.conventions', 'java').versionRef('conventions')
+		library('conventions.buildsrc', 'dev.lukebemish.conventions', 'conventionplugin').versionRef('conventions')
 		plugin('conventions.settings', 'dev.lukebemish.conventions').versionRef('conventions')
 		plugin('conventions.java', 'dev.lukebemish.conventions.java').versionRef('conventions')
+		plugin('conventions.buildsrc', 'dev.lukebemish.conventions.buildsrc').versionRef('conventions')
 	}
 }
 

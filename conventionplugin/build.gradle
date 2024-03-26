@@ -1,0 +1,16 @@
+plugins {
+	id 'shared'
+}
+
+dependencies {
+	implementation project(':')
+}
+
+gradlePlugin {
+	plugins {
+		buildSrcPlugin {
+			id = 'dev.lukebemish.conventions.buildsrc'
+			implementationClass = 'dev.lukebemish.conventions.buildsrc.BuildSrcPlugin'
+		}
+	}
+}
