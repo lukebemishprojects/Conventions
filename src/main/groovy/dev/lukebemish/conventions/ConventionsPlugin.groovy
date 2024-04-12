@@ -63,9 +63,6 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 					it.termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
 					it.termsOfUseAgree.set("yes")
 				}
-				it.capture {
-					it.buildLogging.set(false)
-				}
 			}
 		}
 
