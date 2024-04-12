@@ -1,6 +1,6 @@
 package dev.lukebemish.conventions
 
-import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
+import com.gradle.develocity.agent.gradle.DevelocityConfiguration
 import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -31,7 +31,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 
 	static void applySettings(Settings settings) {
 		settings.pluginManager.apply('org.gradle.toolchains.foojay-resolver-convention')
-		settings.pluginManager.apply('com.gradle.enterprise')
+		settings.pluginManager.apply('com.gradle.develocity')
 
 		settings.pluginManagement.resolutionStrategy {
 			it.eachPlugin {
@@ -53,12 +53,18 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 			}
 		}
 
-		settings.extensions.getByType(GradleEnterpriseExtension).tap {
-			if (System.getenv('CI') != null) {
-				buildScan {
-					it.publishAlways()
-					it.termsOfServiceUrl = "https://gradle.com/terms-of-service"
-					it.termsOfServiceAgree = "yes"
+		def isCI = !settings.providers.environmentVariable('CI').orElse('').get().isEmpty()
+
+		settings.extensions.getByType(DevelocityConfiguration).tap {
+			it.buildScan {
+				it.uploadInBackground.set(false)
+				it.publishing.onlyIf { isCI }
+				if (isCI) {
+					it.termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
+					it.termsOfUseAgree.set("yes")
+				}
+				it.capture {
+					it.buildLogging.set(false)
 				}
 			}
 		}
@@ -71,11 +77,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 						credentials.username = settings.providers.gradleProperty('buildCacheUser').orNull
 						credentials.password = settings.providers.gradleProperty('buildCachePassword').orNull
 					}
-					if (settings.providers.gradleProperty('buildCachePush').orNull) {
-						it.push = true
-					} else {
-						it.push = false
-					}
+					it.push = isCI
 				}
 			} else if (System.getenv('BUILD_CACHE_URL')) {
 				remote(HttpBuildCache) {
@@ -84,11 +86,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
 						credentials.username = System.getenv('BUILD_CACHE_USER')
 						credentials.password = System.getenv('BUILD_CACHE_PASSWORD')
 					}
-					if (System.getenv('BUILD_CACHE_PUSH') || System.getenv('CI')) {
-						it.push = true
-					} else {
-						it.push = false
-					}
+					it.push = isCI
 				}
 			}
 		}
