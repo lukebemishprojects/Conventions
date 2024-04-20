@@ -22,6 +22,7 @@ autoservice = { module = "com.google.auto.service:auto-service", version.ref = "
 gradle_foojay = { module = "org.gradle.toolchains.foojay-resolver-convention:org.gradle.toolchains.foojay-resolver-convention.gradle.plugin", version.ref = "gradle_foojay" }
 gradle_develocity = { module = "com.gradle.develocity:com.gradle.develocity.gradle.plugin", version.ref = "gradle_develocity" }
 spotless = { module = "com.diffplug.spotless:com.diffplug.spotless.gradle.plugin", version.ref = "spotless" }
+managedversioning = { module = "dev.lukebemish.managedversioning:dev.lukebemish.managedversioning.gradle.plugin", version.ref = "managedversioning" }
 
 [bundles]
 

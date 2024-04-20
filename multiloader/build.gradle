@@ -1,0 +1,30 @@
+plugins {
+	id 'shared'
+}
+
+dependencies {
+	api project(':')
+	api project(':java')
+	api libs.managedversioning
+}
+
+gradlePlugin {
+	plugins {
+		multiloaderPlugin {
+			id = 'dev.lukebemish.conventions.multiloader'
+			implementationClass = 'dev.lukebemish.conventions.multiloader.MultiloaderConventionsPlugin'
+		}
+		sharedPlugin {
+			id = 'dev.lukebemish.conventions.multiloader.shared'
+			implementationClass = 'dev.lukebemish.conventions.multiloader.shared.SharedConventionPlugin'
+		}
+		exposerPlugin {
+			id = 'dev.lukebemish.conventions.multiloader.exposer'
+			implementationClass = 'dev.lukebemish.conventions.multiloader.exposer.ExposerConventionPlugin'
+		}
+		consumerPlugin {
+			id = 'dev.lukebemish.conventions.multiloader.consumer'
+			implementationClass = 'dev.lukebemish.conventions.multiloader.consumer.ConsumerConventionPlugin'
+		}
+	}
+}

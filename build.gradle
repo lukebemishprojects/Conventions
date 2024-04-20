@@ -45,6 +45,8 @@ managedVersioning {
 	}
 }
 
+publishing.publications.clear()
+
 println "Building: $version"
 
 dependencies {
