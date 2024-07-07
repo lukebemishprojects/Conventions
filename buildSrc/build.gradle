@@ -11,9 +11,6 @@ repositories {
 }
 
 dependencies {
-	def mvId = libs.plugins.managedversioning.get().getPluginId()
-	implementation "$mvId:${mvId}.gradle.plugin:${libs.versions.managedversioning.get()}"
-
-	def spotlessId = libs.plugins.spotless.get().getPluginId()
-	implementation "$spotlessId:${spotlessId}.gradle.plugin:${libs.versions.spotless.get()}"
+	implementation libs.managedversioning
+	implementation libs.immaculate
 }

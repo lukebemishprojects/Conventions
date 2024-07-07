@@ -11,7 +11,7 @@ gradlepublish = "1.2.1"
 gradle_foojay = "0.8.0"
 gradle_develocity = "3.17.1"
 
-spotless = "6.25.0"
+immaculate = "0.1.0"
 
 [libraries]
 
@@ -21,7 +21,9 @@ autoservice = { module = "com.google.auto.service:auto-service", version.ref = "
 
 gradle_foojay = { module = "org.gradle.toolchains.foojay-resolver-convention:org.gradle.toolchains.foojay-resolver-convention.gradle.plugin", version.ref = "gradle_foojay" }
 gradle_develocity = { module = "com.gradle.develocity:com.gradle.develocity.gradle.plugin", version.ref = "gradle_develocity" }
-spotless = { module = "com.diffplug.spotless:com.diffplug.spotless.gradle.plugin", version.ref = "spotless" }
+immaculate = { module = "dev.lukebemish.immaculate:dev.lukebemish.immaculate.gradle.plugin", version.ref = "immaculate" }
+managedversioning = { module = "dev.lukebemish.managedversioning:dev.lukebemish.managedversioning.gradle.plugin", version.ref = "managedversioning" }
+
 
 [bundles]
 
@@ -33,4 +35,4 @@ annotationprocessor = ["autoservice"]
 managedversioning = { id = "dev.lukebemish.managedversioning", version.ref = "managedversioning" }
 nexuspublish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexuspublish" }
 gradlepublish = { id = "com.gradle.plugin-publish", version.ref = "gradlepublish" }
-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+immaculate = { id = "dev.lukebemish.immaculate", version.ref = "immaculate" }

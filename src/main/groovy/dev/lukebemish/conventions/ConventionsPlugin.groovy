@@ -12,103 +12,103 @@ import org.gradle.caching.http.HttpBuildCacheCredentials
 
 @CompileStatic
 abstract class ConventionsPlugin implements Plugin<Object> {
-	public static final String VERSION = ConventionsPlugin.class.getPackage().getImplementationVersion()
+    public static final String VERSION = ConventionsPlugin.class.getPackage().getImplementationVersion()
 
-	@Override
-	void apply(Object target) {
-		if (target instanceof Project) {
-			applyProject(target)
-		} else if (target instanceof Settings) {
-			applySettings(target)
-		} else {
-			throw new IllegalArgumentException("Unsupported target type: ${target.getClass().name}")
-		}
-	}
+    @Override
+    void apply(Object target) {
+        if (target instanceof Project) {
+            applyProject(target)
+        } else if (target instanceof Settings) {
+            applySettings(target)
+        } else {
+            throw new IllegalArgumentException("Unsupported target type: ${target.getClass().name}")
+        }
+    }
 
-	static void applyProject(Project project) {
-		addRepositories(project.getRepositories(), false)
-	}
+    static void applyProject(Project project) {
+        addRepositories(project.getRepositories(), false)
+    }
 
-	static void applySettings(Settings settings) {
-		settings.pluginManager.apply('org.gradle.toolchains.foojay-resolver-convention')
-		settings.pluginManager.apply('com.gradle.develocity')
+    static void applySettings(Settings settings) {
+        settings.pluginManager.apply('org.gradle.toolchains.foojay-resolver-convention')
+        settings.pluginManager.apply('com.gradle.develocity')
 
-		settings.pluginManagement.resolutionStrategy {
-			it.eachPlugin {
-				if (it.requested.id.name.startsWith('dev.lukebemish.conventions')) {
-					it.useVersion(VERSION)
-				}
-			}
-		}
+        settings.pluginManagement.resolutionStrategy {
+            it.eachPlugin {
+                if (it.requested.id.name.startsWith('dev.lukebemish.conventions')) {
+                    it.useVersion(VERSION)
+                }
+            }
+        }
 
-		String vcNotation = "dev.lukebemish:conventions:${VERSION}"
-		settings.dependencyResolutionManagement { deps ->
-			deps.repositories { repositories ->
-				addRepositories(repositories, false)
-			}
-			deps.versionCatalogs { container ->
-				container.maybeCreate('cLibs').tap {
-					from(vcNotation)
-				}
-			}
-		}
+        String vcNotation = "dev.lukebemish:conventions:${VERSION}"
+        settings.dependencyResolutionManagement { deps ->
+            deps.repositories { repositories ->
+                addRepositories(repositories, false)
+            }
+            deps.versionCatalogs { container ->
+                container.maybeCreate('cLibs').tap {
+                    from(vcNotation)
+                }
+            }
+        }
 
-		def isCI = !settings.providers.environmentVariable('CI').orElse('').get().isEmpty()
+        def isCI = !settings.providers.environmentVariable('CI').orElse('').get().isEmpty()
 
-		settings.extensions.getByType(DevelocityConfiguration).tap {
-			it.buildScan {
-				it.uploadInBackground.set(false)
-				it.publishing.onlyIf { isCI }
-				if (isCI) {
-					it.termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
-					it.termsOfUseAgree.set("yes")
-				}
-			}
-		}
+        settings.extensions.getByType(DevelocityConfiguration).tap {
+            it.buildScan {
+                it.uploadInBackground.set(false)
+                it.publishing.onlyIf { isCI }
+                if (isCI) {
+                    it.termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
+                    it.termsOfUseAgree.set("yes")
+                }
+            }
+        }
 
-		settings.getBuildCache().tap {
-			if (settings.providers.gradleProperty('buildCacheUrl').orNull) {
-				remote(HttpBuildCache) {
-					it.url = settings.providers.gradleProperty('buildCacheUrl').orNull
-					it.credentials { HttpBuildCacheCredentials credentials ->
-						credentials.username = settings.providers.gradleProperty('buildCacheUser').orNull
-						credentials.password = settings.providers.gradleProperty('buildCachePassword').orNull
-					}
-					it.push = isCI
-				}
-			} else if (System.getenv('BUILD_CACHE_URL')) {
-				remote(HttpBuildCache) {
-					it.url = System.getenv('BUILD_CACHE_URL')
-					it.credentials { HttpBuildCacheCredentials credentials ->
-						credentials.username = System.getenv('BUILD_CACHE_USER')
-						credentials.password = System.getenv('BUILD_CACHE_PASSWORD')
-					}
-					it.push = isCI
-				}
-			}
-		}
-	}
+        settings.getBuildCache().tap {
+            if (settings.providers.gradleProperty('buildCacheUrl').orNull) {
+                remote(HttpBuildCache) {
+                    it.url = settings.providers.gradleProperty('buildCacheUrl').orNull
+                    it.credentials { HttpBuildCacheCredentials credentials ->
+                        credentials.username = settings.providers.gradleProperty('buildCacheUser').orNull
+                        credentials.password = settings.providers.gradleProperty('buildCachePassword').orNull
+                    }
+                    it.push = isCI
+                }
+            } else if (System.getenv('BUILD_CACHE_URL')) {
+                remote(HttpBuildCache) {
+                    it.url = System.getenv('BUILD_CACHE_URL')
+                    it.credentials { HttpBuildCacheCredentials credentials ->
+                        credentials.username = System.getenv('BUILD_CACHE_USER')
+                        credentials.password = System.getenv('BUILD_CACHE_PASSWORD')
+                    }
+                    it.push = isCI
+                }
+            }
+        }
+    }
 
-	static void addRepositories(RepositoryHandler repositories, boolean plugins) {
-		repositories.maven { MavenArtifactRepository m ->
-			m.name = "Luke's Maven"
-			m.url = "https://maven.lukebemish.dev/releases/"
-		}
-		if (VERSION.contains("-pr")) {
-			repositories.maven { MavenArtifactRepository m ->
-				m.name = "Luke's Pull Request Maven"
-				m.url = "https://maven.lukebemish.dev/pullrequests/"
-			}
-		} else if (VERSION.endsWith("-SNAPSHOT")) {
-			repositories.maven { MavenArtifactRepository m ->
-				m.name = "Luke's Snapshot Maven"
-				m.url = "https://maven.lukebemish.dev/snapshots/"
-			}
-		} else if (VERSION.endsWith("-dirty")) {
-			repositories.mavenLocal()
-		}
-		if (plugins) {
-			repositories.gradlePluginPortal()
-		}
-	}
+    static void addRepositories(RepositoryHandler repositories, boolean plugins) {
+        repositories.maven { MavenArtifactRepository m ->
+            m.name = "Luke's Maven"
+            m.url = "https://maven.lukebemish.dev/releases/"
+        }
+        if (VERSION.contains("-pr")) {
+            repositories.maven { MavenArtifactRepository m ->
+                m.name = "Luke's Pull Request Maven"
+                m.url = "https://maven.lukebemish.dev/pullrequests/"
+            }
+        } else if (VERSION.endsWith("-SNAPSHOT")) {
+            repositories.maven { MavenArtifactRepository m ->
+                m.name = "Luke's Snapshot Maven"
+                m.url = "https://maven.lukebemish.dev/snapshots/"
+            }
+        } else if (VERSION.endsWith("-dirty")) {
+            repositories.mavenLocal()
+        }
+        if (plugins) {
+            repositories.gradlePluginPortal()
+        }
+    }
 }

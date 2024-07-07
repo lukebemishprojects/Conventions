@@ -2,7 +2,7 @@ plugins {
 	id 'groovy-gradle-plugin'
 	id 'maven-publish'
 	id 'dev.lukebemish.managedversioning'
-	id 'com.diffplug.spotless'
+	id 'dev.lukebemish.immaculate'
 }
 
 managedVersioning {
@@ -37,33 +37,34 @@ tasks.named('jar', Jar) {
 managedVersioning.publishing.mavenPullRequest(publishing)
 managedVersioning.publishing.mavenRelease(publishing)
 
-spotless {
-	encoding 'UTF-8'
-	format 'misc', {
-		target '*.gradle', '.gitattributes', '.gitignore'
-
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
+immaculate {
+	workflows.register('java') {
+		java()
+		trailingNewline()
+		noTrailingSpaces()
+		noTabs(4)
+		googleFixImports()
+		toggleOn.set 'CHECKSTYLE:ON'
+		toggleOff.set 'CHECKSTYLE:OFF'
 	}
-	java {
-		target 'src/main/**/*.java'
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
+	workflows.register('groovy') {
+		def sourceDirs = files()
+		sourceSets.configureEach { sourceDirs.from(it.getAllSource()) }
+		files.from(sourceDirs.filter { it.name.endsWith '.groovy' })
 
-		removeUnusedImports()
-		importOrder()
-		formatAnnotations()
+		trailingNewline()
+		noTrailingSpaces()
+		noTabs(4)
 	}
-	groovy {
-		target 'src/main/**/*.groovy'
+	workflows.register('packageInfo') {
+		def sourceDirs = files()
+		sourceSets.configureEach { sourceDirs.from(it.getAllSource()) }
+		files.from(sourceDirs.filter { it.name == 'package-info.java' })
 
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
-
-		removeSemicolons()
-		importOrder()
+		custom('packageIsNullMarked') {
+			if (!it.contains('@NullMarked')) {
+				throw new GradleException('Packages should be null-marked')
+			}
+		}
 	}
 }
