@@ -1,18 +1,8 @@
 plugins {
 	id 'groovy-gradle-plugin'
 	id 'maven-publish'
-	id 'dev.lukebemish.managedversioning'
 	id 'dev.lukebemish.immaculate'
 }
-
-managedVersioning {
-	versionFile.set project.getRootDir().toPath().resolve('version.properties').toFile()
-	gitWorkingDir.set project.getRootDir()
-	versionPRs()
-	versionSnapshots()
-}
-
-managedVersioning.apply()
 
 project.group = 'dev.lukebemish'+(':' + rootProject.name + project.path).split(':')[0..-2].join('.')
 
@@ -33,9 +23,6 @@ tasks.named('jar', Jar) {
 		attributes(['Implementation-Version': project.version])
 	}
 }
-
-managedVersioning.publishing.mavenPullRequest(publishing)
-managedVersioning.publishing.mavenRelease(publishing)
 
 immaculate {
 	workflows.register('java') {
