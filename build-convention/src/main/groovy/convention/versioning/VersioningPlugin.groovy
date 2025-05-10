@@ -19,7 +19,7 @@ class VersioningPlugin implements Plugin<Settings> {
 			publishing.mavenRelease()
 
 			gitHubActions {
-				it.release {
+				it.register('release') {
 					it.prettyName.set 'Release'
 					it.workflowDispatch.set(true)
 					it.gradleJob {
@@ -38,7 +38,7 @@ class VersioningPlugin implements Plugin<Settings> {
 						it.mavenRelease('github')
 					}
 				}
-				it.build_pr {
+				it.register('build_pr') {
 					it.prettyName.set 'Build PR'
 					it.pullRequest.set(true)
 					it.gradleJob {
@@ -48,7 +48,7 @@ class VersioningPlugin implements Plugin<Settings> {
 						it.pullRequestArtifact()
 					}
 				}
-				it.publish_pr {
+				it.register('publish_pr') {
 					it.prettyName.set 'Publish PR'
 					it.publishPullRequestAction(
 						'github',
