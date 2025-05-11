@@ -24,6 +24,7 @@ class VersioningPlugin implements Plugin<Settings> {
 					it.workflowDispatch.set(true)
 					it.gradleJob {
 						it.name.set 'build'
+						it.javaVersion.set '21'
 						it.step {
 							it.setupGitUser()
 						}
@@ -43,6 +44,7 @@ class VersioningPlugin implements Plugin<Settings> {
 					it.pullRequest.set(true)
 					it.gradleJob {
 						it.name.set 'build'
+						it.javaVersion.set '21'
 						it.gradlew 'Build', 'build'
 						it.gradlew 'Publish', 'publish'
 						it.pullRequestArtifact()
