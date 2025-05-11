@@ -4,7 +4,7 @@ jspecify = "1.0.0"
 jetbrains_annotations = "26.0.2"
 autoservice = "1.1.1"
 
-managedversioning = "2.0.0-beta.1"
+managedversioning = "2.0.0-beta.2"
 gradlepublish = "1.3.1"
 
 gradle_foojay = "0.10.0"
