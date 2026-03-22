@@ -30,7 +30,7 @@ abstract class ConventionsPlugin implements Plugin<Object> {
     }
 
     static void applySettings(Settings settings) {
-		settings.pluginManager.apply("dev.lukebemish.jvmfinder-convention")
+        settings.pluginManager.apply("dev.lukebemish.jvmfinder-convention")
         settings.pluginManager.apply('org.gradle.toolchains.foojay-resolver-convention')
         settings.pluginManager.apply('com.gradle.develocity')
 
