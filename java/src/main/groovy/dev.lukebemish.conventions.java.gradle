@@ -24,7 +24,9 @@ immaculate {
 		trailingNewline()
 		noTrailingSpaces()
 		noTabs(4)
-		googleFixImports()
+		google {
+			fixImports()
+		}
 		toggleOn.set 'CHECKSTYLE:ON'
 		toggleOff.set 'CHECKSTYLE:OFF'
 	}
