@@ -6,6 +6,7 @@ plugins {
 println "Building: $version"
 
 dependencies {
+	implementation libs.jvmfinder
 	implementation libs.gradle.foojay
 	implementation libs.gradle.develocity
 }
